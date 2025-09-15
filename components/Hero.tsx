@@ -1,3 +1,5 @@
+"use client";
+
 import { FaLocationArrow } from "react-icons/fa6";
 
 import MagicButton from "./MagicButton";
@@ -57,7 +59,7 @@ const Hero = () => {
           />
 
           <p className="text-center md:tracking-wider mb-4 text-sm md:text-lg lg:text-2xl">
-            Hai! My name is fahrul, I'm a software engineer. Fullstack I'm coming :D
+            Hai! My name is fahrul, I&apos;m a software engineer. Fullstack I&apos;m coming :D
           </p>
 
           <a href="#about" className="scroll-smooth">

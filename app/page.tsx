@@ -1,31 +1,64 @@
 "use client";
 
-import { navItems } from "@/data";
+import { useState, useEffect } from 'react';
+import * as Sentry from '@sentry/nextjs';
 
-import Hero from "@/components/Hero";
-import Grid from "@/components/Grid";
-import Footer from "@/components/Footer";
-import Clients from "@/components/Clients";
-import Approach from "@/components/Approach";
-import Experience from "@/components/Experience";
-import RecentProjects from "@/components/RecentProjects";
-import { FloatingNav } from "@/components/ui/FloatingNavbar";
+export default function SentryExamplePage() {
+  const [isConnected, setIsConnected] = useState<boolean | null>(null);
 
-const Home = () => {
+  useEffect(() => {
+    // Simple connectivity check tanpa method yang tidak ada
+    async function checkConnectivity() {
+      try {
+        // Coba capture message kecil untuk test connectivity
+        const eventId = Sentry.captureMessage('Testing Sentry connectivity');
+        setIsConnected(eventId !== null && eventId !== '');
+      } catch (error) {
+        console.error('Sentry connectivity check failed:', error);
+        setIsConnected(false);
+      }
+    }
+    
+    checkConnectivity();
+  }, []);
+
   return (
-    <main className="relative bg-black-100 flex justify-center items-center flex-col overflow-hidden mx-auto sm:px-10 px-5">
-      <div className="max-w-7xl w-full">
-        <FloatingNav navItems={navItems} />
-        <Hero />
-        <Grid />
-        <RecentProjects />
-        <Clients />
-        <Experience />
-        <Approach />
-        <Footer />
+    <div className="container mx-auto p-8">
+      <h1 className="text-2xl font-bold mb-4">Sentry Example Page</h1>
+      
+      <div className="mb-4">
+        <h2 className="text-lg font-semibold">Connection Status:</h2>
+        {isConnected === null ? (
+          <p className="text-yellow-600">Checking connectivity...</p>
+        ) : isConnected ? (
+          <p className="text-green-600">✅ Connected to Sentry</p>
+        ) : (
+          <p className="text-red-600">❌ Not connected to Sentry</p>
+        )}
       </div>
-    </main>
-  );
-};
 
-export default Home;
+      <div className="mb-4">
+        <button
+          onClick={() => {
+            Sentry.captureMessage('Test message from button click');
+            alert('Test message sent to Sentry!');
+          }}
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          Send Test Message
+        </button>
+      </div>
+
+      <div>
+        <button
+          onClick={() => {
+            throw new Error('Test error from button click');
+          }}
+          className="bg-red-500 text-white px-4 py-2 rounded"
+        >
+          Trigger Test Error
+        </button>
+      </div>
+    </div>
+  );
+}
